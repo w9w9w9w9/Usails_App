@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>675457030377-om5f06m6v1vrfuomptic7gvj8e339fls.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.675457030377-om5f06m6v1vrfuomptic7gvj8e339fls</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>675457030377-6o732u2llbf8e6vtn5c554c3e4qcdab2.apps.googleusercontent.com</string>
+	<key>API_KEY</key>
+	<string>AIzaSyBCgQqxVtwPXr3EX5-meAxrLizIz5N4cFo</string>
+	<key>GCM_SENDER_ID</key>
+	<string>675457030377</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.usails</string>
+	<key>PROJECT_ID</key>
+	<string>unionetest</string>
+	<key>STORAGE_BUCKET</key>
+	<string>unionetest.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:675457030377:ios:b21f2b5be67f413b88b878</string>
+	<key>DATABASE_URL</key>
+	<string>https://unionetest.firebaseio.com</string>
+</dict>
+</plist>
