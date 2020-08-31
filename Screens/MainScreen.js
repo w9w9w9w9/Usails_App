@@ -110,7 +110,7 @@ export default function MainScreen({navigation}) {
       })
       .then(function (res) {
         const aData = res.data;
-        if (aData.count == 0) {
+        if (aData.count === 0) {
           setListData([{key: 0, text: '공지가 없습니다.'}]);
         } else {
           var tcnt = 0;
