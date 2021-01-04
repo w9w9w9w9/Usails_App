@@ -27,7 +27,7 @@ export default function WebViewCom({link, navigation}) {
       domain: Ustore.com + '.usails.biz',
       path: '/',
       httpOnly: true,
-    }).then((done) => {
+    }).then(() => {
       CookieManager.get(Ustore.url).then((cookies) => {});
     });
     BackHandler.addEventListener('webViewBp', webViewBp);
@@ -46,7 +46,7 @@ export default function WebViewCom({link, navigation}) {
         uri: link,
       }}
       ref={(w) => setRef(w)}
-      onNavigationStateChange={(n) => {
+      onNavigationStateChange={async (n) => {
         if (Platform.OS === 'ios') {
           if (n.navigationType === 'backforward') {
             if (back) {
@@ -61,28 +61,40 @@ export default function WebViewCom({link, navigation}) {
         }
         if (n.url.includes('logout')) {
           ref.stopLoading();
-          axios
-            .delete(Ustore.url + 'api/auth/token/' + Ustore.id, {
-              headers: {
-                'Content-Type': 'application/json',
-                Authorization: Ustore.loginToken,
-              },
-            })
-            .then(async function () {
-              Ustore.first = true;
-              await AsyncStorage.removeItem('@Id');
-              await AsyncStorage.removeItem('@Pw');
-              await AsyncStorage.removeItem('@fcmId');
-              navigation.dispatch(
-                CommonActions.reset({
-                  index: 0,
-                  routes: [{name: 'Login'}],
-                }),
-              );
-            })
-            .catch(function (e) {
-              console.log(e);
-            });
+          if (Ustore.mPermission) {
+            axios
+              .delete(Ustore.url + 'api/auth/token/' + Ustore.id, {
+                headers: {
+                  'Content-Type': 'application/json',
+                  Authorization: Ustore.loginToken,
+                },
+              })
+              .then(async function () {
+                Ustore.first = true;
+                await AsyncStorage.removeItem('@Id');
+                await AsyncStorage.removeItem('@Pw');
+                await AsyncStorage.removeItem('@fcmId');
+                navigation.dispatch(
+                  CommonActions.reset({
+                    index: 0,
+                    routes: [{name: 'Login'}],
+                  }),
+                );
+              })
+              .catch(function (e) {
+                console.log(e);
+              });
+          }
+        } else {
+          await AsyncStorage.removeItem('@Id');
+          await AsyncStorage.removeItem('@Pw');
+          Ustore.first = true;
+          navigation.dispatch(
+            CommonActions.reset({
+              index: 0,
+              routes: [{name: 'Login'}],
+            }),
+          );
         }
         setCgb(n.canGoBack);
       }}

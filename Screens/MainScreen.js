@@ -30,16 +30,17 @@ export default function MainScreen({navigation}) {
   const [bpTime, setBpTime] = useState(0);
   const [tab, setTab] = useState(true);
   const [listData, setListData] = useState([{}]);
-  //const [first, setFirst] = useState(false);
+  const [currentSchedule, setCurrentSchedule] = useState(0);
   const [alarmCount, setAlarmCount] = useState(0);
   const [badgeVisible, setBadgeVisible] = useState(false);
   const [alarmVisible, setAlarmVisible] = useState(false);
   const [setVisible, setSetVisible] = useState(false);
   const [alarmList, setAlarmList] = useState();
+  const [asd, setasd] = useState(true);
   const width = Dimensions.get('window').width;
   const date = moment().format('YYYY-MM-DD');
   const onAlarmClicked = () => {
-    if (alarmVisible == false) {
+    if (alarmVisible === false) {
       axios
         .get(Ustore.url + 'api/v0.1/alerts', {
           headers: {
@@ -50,7 +51,7 @@ export default function MainScreen({navigation}) {
         .then(function (res) {
           const aData = res.data;
           setAlarmCount(aData.count);
-          if (aData.count == 0) {
+          if (aData.count === 0) {
             setAlarmList([{key: 0, text: '알람이 없습니다.'}]);
             setBadgeVisible(false);
           } else {
@@ -72,29 +73,41 @@ export default function MainScreen({navigation}) {
     setAlarmVisible(!alarmVisible);
     setSetVisible(false);
   };
-  const onLogoutClicked = () => {
-    axios
-      .delete(Ustore.url + 'api/auth/token/' + Ustore.id, {
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: Ustore.loginToken,
-        },
-      })
-      .then(async function () {
-        await AsyncStorage.removeItem('@Id');
-        await AsyncStorage.removeItem('@Pw');
-        await AsyncStorage.removeItem('@fcmId');
-        Ustore.first = true;
-        navigation.dispatch(
-          CommonActions.reset({
-            index: 0,
-            routes: [{name: 'Login'}],
-          }),
-        );
-      })
-      .catch(function (e) {
-        console.log('logout error', e);
-      });
+  const onLogoutClicked = async () => {
+    if (Ustore.mPermission) {
+      axios
+        .delete(Ustore.url + 'api/auth/token/' + Ustore.id, {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: Ustore.loginToken,
+          },
+        })
+        .then(async function () {
+          await AsyncStorage.removeItem('@Id');
+          await AsyncStorage.removeItem('@Pw');
+          await AsyncStorage.removeItem('@fcmId');
+          Ustore.first = true;
+          navigation.dispatch(
+            CommonActions.reset({
+              index: 0,
+              routes: [{name: 'Login'}],
+            }),
+          );
+        })
+        .catch(function (e) {
+          console.log('logout error', e);
+        });
+    } else {
+      await AsyncStorage.removeItem('@Id');
+      await AsyncStorage.removeItem('@Pw');
+      Ustore.first = true;
+      navigation.dispatch(
+        CommonActions.reset({
+          index: 0,
+          routes: [{name: 'Login'}],
+        }),
+      );
+    }
   };
   const onNoticeClick = () => {
     setTab(true);
@@ -168,6 +181,101 @@ export default function MainScreen({navigation}) {
     }
   };
   useEffect(() => {
+    if (asd) {
+      setasd(false);
+      Ustore.first = false;
+      axios
+        .get(Ustore.url + 'api/v0.1/alerts', {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: Ustore.loginToken,
+          },
+        })
+        .then(function (res) {
+          const aData = res.data;
+          setAlarmCount(aData.count);
+          if (aData.count === 0) {
+            setBadgeVisible(false);
+          } else {
+            setBadgeVisible(true);
+          }
+        })
+        .catch(function (e) {
+          console.log(e);
+        });
+      axios //나의일정 count
+        .get(Ustore.url + 'api/v0.1/servicereport', {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: Ustore.loginToken,
+          },
+        })
+        .then(function (res) {
+          const count = res.data.count;
+          if (count !== 0) {
+            var tmp = 0;
+            for (; tmp < count; ++tmp) {
+              if (res.data.results[tmp].serviceStatus !== 'Y') {
+                break;
+              }
+            }
+            setCurrentSchedule(res.data.results[tmp].serviceId);
+          } else {
+            setCurrentSchedule(0);
+          }
+          setMyShce(count);
+        })
+        .catch(function (e) {
+          console.log(e);
+        });
+      axios //나의 결제 count
+        .get(Ustore.url + 'api/v0.1/document', {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: Ustore.loginToken,
+          },
+          params: {
+            approval: 'do',
+          },
+        })
+        .then(function (res) {
+          const count = res.data.count;
+          setMyAppr(count);
+        })
+        .catch(function (e) {
+          console.log(e);
+        });
+      axios //게시판
+        .get(Ustore.url + 'api/v0.1/noticeboard', {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: Ustore.loginToken,
+          },
+          params: {
+            category: 1,
+          },
+        })
+        .then(function (res) {
+          const aData = res.data;
+          if (aData.count == 0) {
+            setListData([{key: 0, title: '공지가 없습니다.'}]);
+          } else {
+            var tcnt = 0;
+            aData.count > 4 ? (tcnt = 4) : (tcnt = aData.count);
+            var tmplist = [];
+            for (let i = 0; i < tcnt; i++) {
+              tmplist.push({
+                key: aData.results[i].id,
+                title: aData.results[i].title,
+              });
+            }
+            setListData(tmplist);
+          }
+        })
+        .catch(function (e) {
+          console.log(e);
+        });
+    }
     //app on foreground
     const unsubscribe = messaging().onMessage(async (remoteMessage) => {});
     //app on background
@@ -224,6 +332,13 @@ export default function MainScreen({navigation}) {
         })
         .then(function (res) {
           const count = res.data.count;
+          if (count !== 0) {
+            var tmp = 0;
+            for (; tmp < count; ++tmp) {
+              if (res.data.results[tmp].serviceStatus !== 'Y') break;
+            }
+            setCurrentSchedule(res.data.results[tmp].serviceId);
+          } else setCurrentSchedule(0);
           setMyShce(count);
         })
         .catch(function (e) {
@@ -376,7 +491,11 @@ export default function MainScreen({navigation}) {
                   Ustore.first = true;
                   navigation.navigate('Sub', {
                     navigation: {navigation},
-                    link: Ustore.url + 'scheduler/scheduler/' + date,
+                    link:
+                      Ustore.url +
+                      (currentSchedule === 0
+                        ? 'scheduler/scheduler/' + date
+                        : 'service/viewservice/' + currentSchedule),
                   });
                 }}>
                 <Text

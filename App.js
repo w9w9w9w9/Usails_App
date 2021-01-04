@@ -19,28 +19,39 @@ import {createStackNavigator} from '@react-navigation/stack';
 import Ustore from './Store/Ustore';
 import axios from 'axios';
 import messaging from '@react-native-firebase/messaging';
-import geolocation from '@react-native-community/geolocation';
+import Geolocation from 'react-native-geolocation-service';
 
 function HomeScreen({navigation}) {
   const [page, setPage] = useState(0);
-
   async function requestPermission() {
-    await messaging().requestPermission();
-    geolocation.requestAuthorization();
+    await messaging()
+      .requestPermission()
+      .then(async (m) => {
+        if (m > 0) {
+          Ustore.mPermission = true;
+        }
+        //messaging의 requestPermission 함수 실행시 두번 실행됨  -> 따라서 then으로 연결된 부분도 두번 나오는 것 같음.
+        await Geolocation.requestAuthorization('always').then((g) => {
+          if (g === 'denied') {
+          }
+        });
+      });
   }
 
   useEffect(() => {
     if (Platform.OS === 'ios') {
       requestPermission();
+    } else {
+      PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+        {
+          title: 'Location Access Permission',
+          message: 'We would like to use your location',
+          buttonPositive: 'Okay',
+        },
+      );
     }
-    PermissionsAndroid.request(
-      PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-      {
-        title: 'Location Access Permission',
-        message: 'We would like to use your location',
-        buttonPositive: 'Okay',
-      },
-    );
+
     setTimeout(() => {
       async function getLogin() {
         await AsyncStorage.getItem('@Com').then(async (v) => {
@@ -68,10 +79,13 @@ function HomeScreen({navigation}) {
                       Ustore.profileUri =
                         Ustore.url.slice(0, Ustore.url.length - 1) +
                         res.data.photo;
-                      await AsyncStorage.getItem('@fcmId').then((r) => {
-                        Ustore.id = r;
-                        setPage(3);
-                      });
+                      //알람설정을 허용했을 경우
+                      if (Ustore.mPermission) {
+                        await AsyncStorage.getItem('@fcmId').then((r) => {
+                          Ustore.id = r;
+                        });
+                      }
+                      setPage(3);
                     })
                     .catch((e) => {
                       console.log('login error', e);

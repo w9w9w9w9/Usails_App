@@ -10,6 +10,7 @@ class Ustore {
   profileUri = '';
   com = '';
   first = true;
+  mPermission = false;
 }
 
 export default new Ustore();

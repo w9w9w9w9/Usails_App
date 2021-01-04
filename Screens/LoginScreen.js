@@ -6,9 +6,7 @@ import {
   View,
   StyleSheet,
   TouchableOpacity,
-  ToastAndroid,
   ImageBackground,
-  Alert,
 } from 'react-native';
 import {CheckBox} from 'react-native-elements';
 import AsyncStorage from '@react-native-community/async-storage';
@@ -19,6 +17,7 @@ import {
 import axios from 'axios';
 import Ustore from '../Store/Ustore';
 import messaging from '@react-native-firebase/messaging';
+import Toast from 'react-native-simple-toast';
 
 export default function LoginScreen({navigation}) {
   const [Id, setId] = useState('');
@@ -26,56 +25,63 @@ export default function LoginScreen({navigation}) {
   const [checked, setChecked] = useState(false);
   const doLogin = () => {
     if (Id === '' || Pw === '') {
-      ToastAndroid.show('빈칸을 모두 채워주세요', ToastAndroid.SHORT);
-    }
-    const data = {
-      username: Id,
-      password: Pw,
-    };
-    axios
-      .post(Ustore.url + 'api/auth/login', JSON.stringify(data), {
-        headers: {'Content-Type': 'application/json'},
-      })
-      .then(async (res) => {
-        Ustore.username = data.username;
-        Ustore.password = Pw;
-        Ustore.loginToken = 'Token ' + res.data.token;
-        Ustore.sessionId = res.data.sessionid;
-        Ustore.profileUri =
-          Ustore.url.slice(0, Ustore.url.length - 1) + res.data.photo;
-        if (checked) {
-          await AsyncStorage.setItem('@Id', Id);
-          await AsyncStorage.setItem('@Pw', Pw);
-        }
-        messaging()
-          .getToken()
-          .then((t) => {
-            const td = {token: t};
-            axios
-              .post(Ustore.url + 'api/auth/token', JSON.stringify(td), {
-                headers: {
-                  'Content-Type': 'application/json',
-                  Authorization: Ustore.loginToken,
-                },
-              })
-              .then(async (r) => {
-                Ustore.id = r.data.id;
-                if (checked) {
-                  await AsyncStorage.setItem('@fcmId', r.data.id.toString());
-                }
-                navigation.navigate('Main');
-              })
-              .catch((e) => {
-                ToastAndroid.show(
-                  '서버에 오류가 발생하였습니다. 다시 시도하여주십시오.',
-                  ToastAndroid.SHORT,
-                );
+      Toast.show('빈칸을 모두 작성해주세요.');
+    } else {
+      const data = {
+        username: Id,
+        password: Pw,
+      };
+      axios
+        .post(Ustore.url + 'api/auth/login', JSON.stringify(data), {
+          headers: {'Content-Type': 'application/json'},
+        })
+        .then(async (res) => {
+          Ustore.username = data.username;
+          Ustore.password = Pw;
+          Ustore.loginToken = 'Token ' + res.data.token;
+          Ustore.sessionId = res.data.sessionid;
+          Ustore.profileUri =
+            Ustore.url.slice(0, Ustore.url.length - 1) + res.data.photo;
+          if (checked) {
+            await AsyncStorage.setItem('@Id', Id);
+            await AsyncStorage.setItem('@Pw', Pw);
+          }
+          //알람 설정을 허용했을 경우
+          if (Ustore.mPermission) {
+            messaging()
+              .getToken()
+              .then((t) => {
+                const td = {token: t};
+                axios
+                  .post(Ustore.url + 'api/auth/token', JSON.stringify(td), {
+                    headers: {
+                      'Content-Type': 'application/json',
+                      Authorization: Ustore.loginToken,
+                    },
+                  })
+                  .then(async (r) => {
+                    //token id
+                    Ustore.id = r.data.id;
+                    if (checked) {
+                      await AsyncStorage.setItem('@fcmId', r.data.id.toString());
+                    }
+                    navigation.navigate('Main');
+                  })
+                  .catch((e) => {
+                    Toast.show(
+                      '서버에 오류가 발생하였습니다. 다시 시도하여주십시오.'
+                    );
+                  });
               });
-          });
-      })
-      .catch((e) => {
-        ToastAndroid.show('ID 혹은 Password가 틀렸습니다.', ToastAndroid.SHORT);
-      });
+          } else {
+            //알람설정을 허용하지 않았을 경우
+            navigation.navigate('Main');
+          }
+        })
+        .catch((e) => {
+          Toast.show('ID 혹은 Password가 틀렸습니다.');
+        });
+    }
   };
   return (
     <View style={{flex: 1}}>

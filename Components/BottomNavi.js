@@ -5,8 +5,10 @@ import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import Feather from 'react-native-vector-icons/Feather';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Ustore from '../Store/Ustore';
+import moment from 'moment';
 
 export default function BottomNavi({navigation}) {
+  const date = moment().format('YYYY-MM-DD');
   return (
     <View style={styles.bottomNaviCon}>
       <TouchableOpacity
@@ -20,7 +22,6 @@ export default function BottomNavi({navigation}) {
       <TouchableOpacity
         style={styles.bottomNaviBtn}
         onPress={() => {
-          Ustore.first = true;
           navigation.navigate('Sub', {
             navigation: {navigation},
             link: Ustore.url + 'approval/showdocument/all/',
@@ -31,10 +32,9 @@ export default function BottomNavi({navigation}) {
       <TouchableOpacity
         style={styles.bottomNaviBtn}
         onPress={() => {
-          Ustore.first = true;
           navigation.navigate('Sub', {
             navigation: {navigation},
-            link: Ustore.url + 'service/showservices/',
+            link: Ustore.url + 'scheduler/scheduler/' + date,
           });
         }}>
         <FontAwesome5 name="calendar-alt" size={24} color="#4C4C4C" />
@@ -42,7 +42,6 @@ export default function BottomNavi({navigation}) {
       <TouchableOpacity
         style={styles.bottomNaviBtn}
         onPress={() => {
-          Ustore.first = true;
           navigation.navigate('Sub', {
             navigation: {navigation},
             link: Ustore.url + 'hr/showemployees/',

@@ -19,6 +19,8 @@
 		7C596C870456C4C01AC8BE15 /* libPods-Usails-tvOSTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F0AA911821EC3C4791D1296D /* libPods-Usails-tvOSTests.a */; };
 		86049B8DC7AE7BF861C324D6 /* libPods-Usails-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6940465727D8D7AAEF3FEC38 /* libPods-Usails-tvOS.a */; };
 		D3617CA924EBCB160060A172 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = D3617CA824EBCB160060A172 /* GoogleService-Info.plist */; };
+		D3CF2E542581FAB400E8F26B /* AppCenter-Config.plist in Resources */ = {isa = PBXBuildFile; fileRef = D3CF2E532581FAB400E8F26B /* AppCenter-Config.plist */; };
+		D3CF2E552581FAB400E8F26B /* AppCenter-Config.plist in Resources */ = {isa = PBXBuildFile; fileRef = D3CF2E532581FAB400E8F26B /* AppCenter-Config.plist */; };
 		E8FEFF2C1EE1A114E18D22D6 /* libPods-Usails.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 162FC2298FAB751FEAD6E120 /* libPods-Usails.a */; };
 /* End PBXBuildFile section */
 
@@ -65,6 +67,7 @@
 		D3617CA824EBCB160060A172 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../../Downloads/GoogleService-Info.plist"; sourceTree = "<group>"; };
 		D383F4B124ECA75E003AF89A /* UsailsRelease.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = UsailsRelease.entitlements; path = Usails/UsailsRelease.entitlements; sourceTree = "<group>"; };
 		D383F4B224ECA769003AF89A /* Usails.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = Usails.entitlements; path = Usails/Usails.entitlements; sourceTree = "<group>"; };
+		D3CF2E532581FAB400E8F26B /* AppCenter-Config.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "AppCenter-Config.plist"; sourceTree = "<group>"; };
 		D5C61A976131D508D7CC1D6B /* Pods-Usails-tvOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Usails-tvOS.release.xcconfig"; path = "Target Support Files/Pods-Usails-tvOS/Pods-Usails-tvOS.release.xcconfig"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		ED2971642150620600B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS12.0.sdk/System/Library/Frameworks/JavaScriptCore.framework; sourceTree = DEVELOPER_DIR; };
@@ -136,6 +139,7 @@
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				13B07FB71A68108700A75B9A /* main.m */,
+				D3CF2E532581FAB400E8F26B /* AppCenter-Config.plist */,
 			);
 			name = Usails;
 			sourceTree = "<group>";
@@ -348,6 +352,7 @@
 			files = (
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				D3617CA924EBCB160060A172 /* GoogleService-Info.plist in Resources */,
+				D3CF2E542581FAB400E8F26B /* AppCenter-Config.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -356,6 +361,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				2D02E4BD1E0B4A84006451C7 /* Images.xcassets in Resources */,
+				D3CF2E552581FAB400E8F26B /* AppCenter-Config.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -738,11 +744,13 @@
 				CODE_SIGN_ENTITLEMENTS = Usails/Usails.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 1.0.33;
 				DEVELOPMENT_TEAM = XBZQ47FQVR;
 				ENABLE_BITCODE = NO;
+				"EXCLUDED_ARCHS[sdk=*]" = arm64;
 				INFOPLIST_FILE = Usails/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				MARKETING_VERSION = 1.0.33;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -764,10 +772,12 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Usails/UsailsRelease.entitlements;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 1.0.33;
 				DEVELOPMENT_TEAM = XBZQ47FQVR;
 				INFOPLIST_FILE = Usails/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				MARKETING_VERSION = 1.0.33;
+				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -1013,7 +1023,7 @@
 				00E356F71AD99517003FC87E /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
+			defaultConfigurationName = Debug;
 		};
 		13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "Usails" */ = {
 			isa = XCConfigurationList;
@@ -1022,7 +1032,7 @@
 				13B07F951A680F5B00A75B9A /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
+			defaultConfigurationName = Debug;
 		};
 		2D02E4BA1E0B4A5E006451C7 /* Build configuration list for PBXNativeTarget "Usails-tvOS" */ = {
 			isa = XCConfigurationList;
@@ -1031,7 +1041,7 @@
 				2D02E4981E0B4A5E006451C7 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
+			defaultConfigurationName = Debug;
 		};
 		2D02E4BB1E0B4A5E006451C7 /* Build configuration list for PBXNativeTarget "Usails-tvOSTests" */ = {
 			isa = XCConfigurationList;
@@ -1040,7 +1050,7 @@
 				2D02E49A1E0B4A5E006451C7 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
+			defaultConfigurationName = Debug;
 		};
 		83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "Usails" */ = {
 			isa = XCConfigurationList;
@@ -1049,7 +1059,7 @@
 				83CBBA211A601CBA00E9B192 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
+			defaultConfigurationName = Debug;
 		};
 /* End XCConfigurationList section */
 	};

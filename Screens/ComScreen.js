@@ -26,6 +26,9 @@ export default function ComScreen({navigation}) {
       Com !== 'dsa' &&
       Com !== 'unioneinc' &&
       Com !== 'sunsite' &&
+      Com !== 'mirhenge' &&
+      Com !== 'rosis' &&
+      Com !== 'rosis' &&
       Com !== 'sample'
     ) {
       Alert.alert(
